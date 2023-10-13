@@ -63,6 +63,9 @@ void Error_Handler(void);
 #define MCO_GPIO_Port GPIOH
 #define GREEN_LED_Pin GPIO_PIN_0
 #define GREEN_LED_GPIO_Port GPIOC
+#define BUTTON_Pin GPIO_PIN_0
+#define BUTTON_GPIO_Port GPIOA
+#define BUTTON_EXTI_IRQn EXTI0_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
