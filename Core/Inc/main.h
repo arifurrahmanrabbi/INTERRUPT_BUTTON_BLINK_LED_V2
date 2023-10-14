@@ -91,6 +91,14 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+typedef enum {
+  OFF,          //Blink off
+  ON,           //Blink on
+  IDLE_OFF,     //Idling at Blink off
+  IDLE_ON,      //Idling at Blink on
+  TOGGLE        //Toggling
+} PROGRAM_STATE;
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

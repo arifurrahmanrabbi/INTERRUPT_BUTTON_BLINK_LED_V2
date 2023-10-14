@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "led_controls.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +47,9 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+PROGRAM_STATE CurState = IDLE_OFF;
+volatile PROGRAM_STATE NewState = IDLE_OFF;
 
 /* USER CODE END PV */
 
@@ -100,6 +105,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if (CurState == NewState)
+      continue;
+    CurState = NewState;
+    if (CurState == ON || CurState == OFF)
+    {
+      led_reinit(CurState);
+      StartStopTimer(CurState, &htim6);
+      if (CurState == ON)
+        NewState = IDLE_ON;
+      else 
+        NewState = IDLE_OFF;
+    }
+    else if (CurState == TOGGLE)
+    {
+      toggle_led();
+      NewState = IDLE_ON;
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
