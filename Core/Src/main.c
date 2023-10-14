@@ -49,9 +49,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 
 //We always start from idling at off state
-PROGRAM_STATE CurState = IDLE_OFF;
-//Changed by interrupt so we make it volatile
-volatile PROGRAM_STATE NewState = IDLE_OFF;
+volatile PROGRAM_STATE CurState = IDLE_OFF;
 
 /* USER CODE END PV */
 
@@ -107,23 +105,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (CurState == NewState)   //State didn't change. So we do nothing
+    if (CurState == IDLE_ON || CurState == IDLE_OFF)    //We are idling. Nothing to do
       continue;
-    CurState = NewState;        //State changed. We change current state to the new state
+    /*
+      We are disabling interrupts as they might cause problems later
+    */
+    HAL_NVIC_DisableIRQ(EXTI0_IRQn);    //Disables button interrupt
+    HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn); //Disables timer interrupt
     if (CurState == ON || CurState == OFF)
     {
       led_reinit(CurState);
       StartStopTimer(CurState, &htim6);
       if (CurState == ON)       //Blinking is on. We now idle until state changes
-        NewState = IDLE_ON;
+        CurState = IDLE_ON;
       else 
-        NewState = IDLE_OFF;    //Blinking is off. We now idle until state changes
+        CurState = IDLE_OFF;    //Blinking is off. We now idle until state changes
     }
     else if (CurState == TOGGLE)
     {
       toggle_led();
-      NewState = IDLE_ON;       //Toggled. We now idle until state changes
+      CurState = IDLE_ON;       //Toggled. We now idle until state changes
     }
+    HAL_NVIC_EnableIRQ(EXTI0_IRQn);     //Enables button interrupt
+    HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);  //Enables timer interrupt
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

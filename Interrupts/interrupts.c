@@ -1,8 +1,7 @@
 #include "main.h"
 #include "interrupts.h"
 
-extern PROGRAM_STATE CurState;
-extern volatile PROGRAM_STATE NewState;
+extern volatile PROGRAM_STATE CurState;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -12,12 +11,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     //We are idling at OFF state. So, we start blinking
     if (CurState == IDLE_OFF)
     {
-      NewState = ON;
+      CurState = ON;
     }
     //We are idling at ON state. So, we stop blinking
     else if (CurState == IDLE_ON)
     {
-      NewState = OFF;
+      CurState = OFF;
     }
   }
 }
@@ -31,6 +30,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   */
   if (htim->Instance == TIM6 && CurState == IDLE_ON)
   {
-    NewState = TOGGLE;
+    CurState = TOGGLE;
   }
 }
